@@ -83,13 +83,22 @@ class ReleaseFile:
 
 
 class PackagesFile:
+    """"""
     def __init__(self, content):
-        self.__content = content
+        self.__content = content.strip()
+
+    @property
+    def packages(self):
+        packages = []
+        for package_content in self.__content.split('\n\n'):
+            packages.append(BinaryPackage(package_content))
+
+        return packages
 
 
-class Package:
+class BinaryPackage:
     def __init__(self, content):
-        self.__content = content
+        self.__content = content.strip()
         
     @property
     def package(self):
@@ -145,7 +154,19 @@ class APTRepository:
             'Packages'
         )
 
-        print(download_compressed(url))
+        packages_file = download_compressed(url)
+
+        return PackagesFile(packages_file).packages
+
+    def get_packages_by_name(self, name):
+        all_binary_packages = self.packages
+        packages = []
+
+        for package in all_binary_packages:
+            if package.package == name:
+                packages.append(package)
+
+        return packages
 
 repo = APTRepository('http://archive.ubuntu.com/ubuntu', 'xenial')
 print(repo.get_binary_packages('main'))
