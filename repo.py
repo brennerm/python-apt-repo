@@ -101,15 +101,21 @@ class Package:
 
 
 class APTRepository:
-    def __init__(self, url, dist):
+    def __init__(self, url, dist, components):
         self.__url = url
         self.__dist = dist
+        self.__components = components
 
     @property
     def components(self):
-        return self.get_release().components
+        return self.__components
 
-    def get_release(self):
+    @property
+    def all_components(self):
+        return self.release_file.components
+
+    @property
+    def release_file(self):
         url = os.path.join(
             self.__url,
             'dists',
@@ -121,7 +127,15 @@ class APTRepository:
 
         return ReleaseFile(release_content)
 
-    def get_binary_packages(self, component, arch='amd64'):
+    @property
+    def packages(self, arch='amd64'):
+        packages = []
+        for component in self.__components:
+            packages.extend(self.get_binary_packages_by_component(component, arch))
+
+        return packages
+
+    def get_binary_packages_by_component(self, component, arch='amd64'):
         url = os.path.join(
             self.__url,
             'dists',
