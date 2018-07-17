@@ -115,6 +115,10 @@ class BinaryPackage:
     def version(self):
         return get_value(self.__content, 'Version')
 
+    @property
+    def filename(self):
+        return get_value(self.__content, 'Filename')
+
 
 class APTRepository:
     def __init__(self, url, dist, components):
