@@ -168,5 +168,24 @@ class APTRepository:
 
         return packages
 
-repo = APTRepository('http://archive.ubuntu.com/ubuntu', 'xenial')
-print(repo.get_binary_packages('main'))
+
+class APTSources:
+    def __init__(self, repositories):
+        self.__repositories = repositories
+
+    @property
+    def packages(self):
+        packages = []
+
+        for repo in self.__repositories:
+            packages.extend(repo.packages)
+
+        return packages
+
+    def get_packages_by_name(self, name):
+        packages = []
+
+        for repo in self.__repositories:
+            packages.extend(repo.get_packages_by_name(name))
+
+        return packages
