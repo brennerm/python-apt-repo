@@ -126,6 +126,9 @@ class APTRepository:
         self.__dist = dist
         self.__components = components
 
+    def __getitem__(self, item):
+        return self.get_packages_by_name(item)
+
     @staticmethod
     def from_sources_list_entry(entry):
         split_entry = entry.split()
@@ -193,6 +196,9 @@ class APTRepository:
 class APTSources:
     def __init__(self, repositories):
         self.__repositories = repositories
+
+    def __getitem__(self, item):
+        return self.get_packages_by_name(item)
 
     @property
     def packages(self):
