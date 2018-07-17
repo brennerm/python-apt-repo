@@ -182,11 +182,22 @@ class APTRepository:
 
         return PackagesFile(packages_file).packages
 
+    def get_package(self, name, version):
+        for package in self.packages:
+            if package.package == name and package.version == version:
+                return package
+
+        raise KeyError(name, version)
+
+    def get_package_url(self, name, version):
+        package = self.get_package(name, version)
+
+        return os.path.join(self.__url, package.filename)
+
     def get_packages_by_name(self, name):
-        all_binary_packages = self.packages
         packages = []
 
-        for package in all_binary_packages:
+        for package in self.packages:
             if package.package == name:
                 packages.append(package)
 
@@ -208,6 +219,24 @@ class APTSources:
             packages.extend(repo.packages)
 
         return packages
+
+    def get_package(self, name, version):
+        for repo in self.__repositories:
+            try:
+                return repo.get_package(name, version)
+            except KeyError:
+                pass
+
+        raise KeyError(name, version)
+
+    def get_package_url(self, name, version):
+        for repo in self.__repositories:
+            try:
+                return repo.get_package_url(name, version)
+            except KeyError:
+                pass
+
+        raise KeyError(name, version)
 
     def get_packages_by_name(self, name):
         packages = []
