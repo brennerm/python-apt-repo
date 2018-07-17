@@ -94,6 +94,9 @@ class PackagesFile:
     def packages(self):
         packages = []
         for package_content in self.__content.split('\n\n'):
+            if not package_content:
+                continue
+
             packages.append(BinaryPackage(package_content))
 
         return packages
