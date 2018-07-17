@@ -45,8 +45,9 @@ def get_value(content, key):
 
 
 class ReleaseFile:
+    """Class that represents a Release file"""
     def __init__(self, content):
-        self.__content = content
+        self.__content = content.strip()
 
     @property
     def origin(self):
