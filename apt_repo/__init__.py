@@ -122,6 +122,16 @@ class APTRepository:
         self.__dist = dist
         self.__components = components
 
+    @staticmethod
+    def from_sources_list_entry(entry):
+        split_entry = entry.split()
+
+        url = split_entry[1]
+        dist = split_entry[2]
+        components = split_entry[3:]
+
+        return APTRepository(url, dist, components)
+
     @property
     def components(self):
         return self.__components
