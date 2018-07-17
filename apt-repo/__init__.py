@@ -38,7 +38,10 @@ def download_compressed(base_url):
 def get_value(content, key):
     pattern = key + ': (.*)\n'
     match = re.search(pattern, content)
-    return match.group(1)
+    try:
+        return match.group(1)
+    except AttributeError:
+        raise KeyError(content, key)
 
 
 class ReleaseFile:
