@@ -1,4 +1,4 @@
-# python-apt-repo
+# python-apt-repo [![Build Status](https://travis-ci.org/brennerm/python-apt-repo.svg?branch=master)](https://travis-ci.org/brennerm/python-apt-repo)
 Python library to query APT repositories.
 
 ## Example
