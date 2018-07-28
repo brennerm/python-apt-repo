@@ -16,3 +16,5 @@ sources = APTSources([
 print([(package.package, package.version) for package in sources.get_packages_by_name('docker.io')])
 [('docker.io', '1.10.3-0ubuntu6'), ('docker.io', '1.13.1-0ubuntu1~16.04.2'), ('docker.io', '17.03.2-0ubuntu2~16.04.1')]
 ```
+
+## [API Documentation](https://brennerm.github.io/python-apt-repo/apt_repo/)
