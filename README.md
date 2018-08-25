@@ -4,6 +4,8 @@ Python library to query APT repositories.
 ## Example
 
 ```python
+from apt_repo import APTSources, APTRepository
+
 url = 'http://archive.ubuntu.com/ubuntu'
 components = ['main', 'universe', 'multiverse', 'restricted']
 sources = APTSources([
