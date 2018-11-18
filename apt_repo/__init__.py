@@ -224,6 +224,7 @@ class APTRepository:
             'Release'
         )
 
+        url = url.replace("\\", "/")
         release_content = _download(url)
 
         return ReleaseFile(release_content)
@@ -259,6 +260,8 @@ class APTRepository:
             'Packages'
         )
 
+        url = url.replace("\\", "/")
+
         packages_file = _download_compressed(url)
 
         return PackagesFile(packages_file).packages
@@ -287,7 +290,9 @@ class APTRepository:
         """
         package = self.get_package(name, version)
 
-        return os.path.join(self.__url, package.filename)
+        url = os.path.join(self.__url, package.filename)
+        url = url.replace("\\", "/")
+        return url
 
     def get_packages_by_name(self, name):
         """
