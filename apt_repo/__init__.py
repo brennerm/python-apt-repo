@@ -2,10 +2,10 @@ import bz2
 import gzip
 import lzma
 import os
+import posixpath
 import re
 import urllib.error
 import urllib.request as request
-import posixpath
 
 
 def __download_raw(url):
