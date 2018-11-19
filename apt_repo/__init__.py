@@ -5,6 +5,7 @@ import os
 import re
 import urllib.error
 import urllib.request as request
+import posixpath
 
 
 def __download_raw(url):
@@ -217,7 +218,7 @@ class APTRepository:
     @property
     def release_file(self):
         """Returns the Release file of this repository"""
-        url = os.path.join(
+        url = posixpath.join(
             self.__url,
             'dists',
             self.__dist,
@@ -250,7 +251,7 @@ class APTRepository:
         component (str): the component to return packages for
         arch (str): the architecture to return packages for, default: 'amd64'
         """
-        url = os.path.join(
+        url = posixpath.join(
             self.__url,
             'dists',
             self.__dist,
@@ -287,7 +288,7 @@ class APTRepository:
         """
         package = self.get_package(name, version)
 
-        return os.path.join(self.__url, package.filename)
+        return posixpath.join(self.__url, package.filename)
 
     def get_packages_by_name(self, name):
         """
