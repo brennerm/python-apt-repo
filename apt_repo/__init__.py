@@ -238,6 +238,8 @@ class APTRepository:
         arch (str): the architecture to return packages for, default: 'amd64'
         """
         packages = []
+        if len(self.__components) == 0:
+            packages.extend(self.get_binary_packages_by_component(None, arch))
         for component in self.__components:
             packages.extend(self.get_binary_packages_by_component(component, arch))
 
@@ -251,13 +253,19 @@ class APTRepository:
         component (str): the component to return packages for
         arch (str): the architecture to return packages for, default: 'amd64'
         """
-        url = posixpath.join(
-            self.__url,
-            'dists',
-            self.__dist,
-            component,
-            'binary-' + arch,
-            'Packages'
+        if component is None: #assume flat
+            url = posixpath.join(
+                self.__url,
+                self.__dist,
+                'Packages')
+        else:
+            url = posixpath.join(
+                self.__url,
+                'dists',
+                self.__dist,
+                component,
+                'binary-' + arch,
+                'Packages'
         )
 
         packages_file = _download_compressed(url)
