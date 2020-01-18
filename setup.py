@@ -15,5 +15,6 @@ setup(
     author_email='xamrennerb@gmail.com',
     description='Python library to query APT repositories',
     long_description_content_type='text/markdown',
-    long_description=long_description
+    long_description=long_description,
+    python_requires='>=3.5'
 )

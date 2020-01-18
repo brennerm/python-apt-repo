@@ -7,7 +7,6 @@ sudo: required
 install:
   - pip install -r requirements-doc.txt
 script:
-  - docker run -v $(pwd):/root/apt-repo python:2.7 pip install /root/apt-repo && python -c "import apt_repo"
   - docker run -v $(pwd):/root/apt-repo python:3.6 pip install /root/apt-repo && python -c "import apt_repo"
   - cd doc
   - pydocmd build
