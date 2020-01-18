@@ -177,12 +177,13 @@ class APTRepository:
     # Examples
     ```python
     APTRepository('http://archive.ubuntu.com/ubuntu', 'bionic', 'main')
+    APTRepository('https://pkg.jenkins.io/debian/', 'binary')
     ```
     """
-    def __init__(self, url, dist, components):
-        self.__url = url
-        self.__dist = dist
-        self.__components = components
+    def __init__(self, url, dist, components=[]):
+        self.url = url
+        self.dist = dist
+        self.components = components
 
     def __getitem__(self, item):
         return self.get_packages_by_name(item)
@@ -201,14 +202,13 @@ class APTRepository:
 
         url = split_entry[1]
         dist = split_entry[2]
-        components = split_entry[3:]
+        try:
+            components = split_entry[3:]
+        except IndexError:
+            # we assume that it is a flat repo https://wiki.debian.org/DebianRepository/Format#Flat_Repository_Format
+            components = []
 
         return APTRepository(url, dist, components)
-
-    @property
-    def components(self):
-        """Returns the selected components of this repository"""
-        return self.__components
 
     @property
     def all_components(self):
@@ -219,9 +219,9 @@ class APTRepository:
     def release_file(self):
         """Returns the Release file of this repository"""
         url = posixpath.join(
-            self.__url,
+            self.url,
             'dists',
-            self.__dist,
+            self.dist,
             'Release'
         )
 
@@ -238,9 +238,9 @@ class APTRepository:
         arch (str): the architecture to return packages for, default: 'amd64'
         """
         packages = []
-        if len(self.__components) == 0:
+        if len(self.components) == 0:
             packages.extend(self.get_binary_packages_by_component(None, arch))
-        for component in self.__components:
+        for component in self.components:
             packages.extend(self.get_binary_packages_by_component(component, arch))
 
         return packages
@@ -253,16 +253,16 @@ class APTRepository:
         component (str): the component to return packages for
         arch (str): the architecture to return packages for, default: 'amd64'
         """
-        if component is None: #assume flat
+        if component is None:
             url = posixpath.join(
-                self.__url,
-                self.__dist,
+                self.url,
+                self.dist,
                 'Packages')
         else:
             url = posixpath.join(
-                self.__url,
+                self.url,
                 'dists',
-                self.__dist,
+                self.dist,
                 component,
                 'binary-' + arch,
                 'Packages'
@@ -296,7 +296,7 @@ class APTRepository:
         """
         package = self.get_package(name, version)
 
-        return posixpath.join(self.__url, package.filename)
+        return posixpath.join(self.url, package.filename)
 
     def get_packages_by_name(self, name):
         """
