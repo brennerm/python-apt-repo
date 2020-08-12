@@ -1,7 +1,6 @@
 import bz2
 import gzip
 import lzma
-import os
 import posixpath
 import re
 import requests
