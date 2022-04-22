@@ -485,7 +485,10 @@ class APTRepository:
 
         packages_file = _download_compressed(url)
 
-        return PackagesFile(packages_file).packages
+        if packages_file is not None:
+            return PackagesFile(packages_file).packages
+        else:
+            return []
 
     def get_package(self, name, version):
         """
