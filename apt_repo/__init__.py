@@ -1,7 +1,6 @@
 import bz2
 import gzip
 import lzma
-import os
 import posixpath
 import re
 import urllib.error
@@ -78,6 +77,7 @@ class ReleaseFile:
     # Arguments
     content (str): the content of the Release file
     """
+
     def __init__(self, content):
         self.__content = content.strip()
 
@@ -125,6 +125,7 @@ class PackagesFile:
     # Arguments
     content (str): the content of the Packages file
     """
+
     def __init__(self, content):
         self.__content = content.strip()
 
@@ -149,6 +150,7 @@ class BinaryPackage:
     # Arguments
     content (str): the section of the Packages file for this specific package
     """
+
     def __init__(self, content):
         self.__content = content.strip()
 
@@ -375,6 +377,7 @@ class BinaryPackage:
         except KeyError:
             return None
 
+
 class APTRepository:
     """
     Class that represents a single APT repository
@@ -390,6 +393,7 @@ class APTRepository:
     APTRepository('https://pkg.jenkins.io/debian/', 'binary')
     ```
     """
+
     def __init__(self, url, dist, components=[]):
         self.url = url
         self.dist = dist
@@ -451,7 +455,8 @@ class APTRepository:
         if len(self.components) == 0:
             packages.extend(self.get_binary_packages_by_component(None, arch))
         for component in self.components:
-            packages.extend(self.get_binary_packages_by_component(component, arch))
+            packages.extend(
+                self.get_binary_packages_by_component(component, arch))
 
         return packages
 
@@ -476,11 +481,14 @@ class APTRepository:
                 component,
                 'binary-' + arch,
                 'Packages'
-        )
+            )
 
         packages_file = _download_compressed(url)
 
-        return PackagesFile(packages_file).packages
+        if packages_file is not None:
+            return PackagesFile(packages_file).packages
+        else:
+            return []
 
     def get_package(self, name, version):
         """
@@ -532,6 +540,7 @@ class APTSources:
     # Arguments
     repositories (list): list of APTRepository objects
     """
+
     def __init__(self, repositories):
         self.__repositories = repositories
 
