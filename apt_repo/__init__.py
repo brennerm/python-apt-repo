@@ -3,8 +3,7 @@ import gzip
 import lzma
 import posixpath
 import re
-import urllib.error
-import urllib.request as request
+import requests
 
 
 def __download_raw(url):
@@ -14,7 +13,7 @@ def __download_raw(url):
     # Arguments
     url (str): URL to file
     """
-    return request.urlopen(url).read()
+    return requests.get(url).content
 
 
 def _download(url):
@@ -47,11 +46,11 @@ def _download_compressed(base_url):
         url = base_url + suffix
 
         try:
-            req = request.urlopen(url)
-        except urllib.error.URLError:
+            req = requests.get(url)
+        except requests.error.URLError:
             continue
 
-        return method(req.read()).decode('utf-8')
+        return method(req.content).decode('utf-8')
 
 
 def _get_value(content, key):
@@ -603,3 +602,4 @@ class APTSources:
             packages.extend(repo.get_packages_by_name(name))
 
         return packages
+    
