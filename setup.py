@@ -7,7 +7,7 @@ with open(path.join(this_directory, 'README.md')) as f:
 
 setup(
     name='apt-repo',
-    version='0.5',
+    version='0.6',
     packages=['apt_repo'],
     url='https://github.com/brennerm/python-apt-repo',
     license='MIT',
@@ -16,5 +16,6 @@ setup(
     description='Python library to query APT repositories',
     long_description_content_type='text/markdown',
     long_description=long_description,
-    python_requires='>=3.5'
+    python_requires='>=3.7',
+    install_requires=["requests"],
 )
