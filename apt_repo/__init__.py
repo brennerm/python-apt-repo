@@ -3,31 +3,30 @@ import gzip
 import lzma
 import posixpath
 import re
-import urllib.error
-import urllib.request as request
+import requests
 
 
-def __download_raw(url):
+def __download_raw(session: requests.Session, url):
     """
     Downloads a binary file
 
     # Arguments
     url (str): URL to file
     """
-    return request.urlopen(url).read()
+    return session.get(url).content
 
 
-def _download(url):
+def _download(session: requests.Session, url):
     """
     Downloads a UTF-8 encoded file
 
     # Arguments
     url (str): URL to file
     """
-    return __download_raw(url).decode('utf-8')
+    return __download_raw(session, url).decode('utf-8')
 
 
-def _download_compressed(base_url):
+def _download_compressed(session: requests.Session, base_url):
     """
     Downloads a compressed file
 
@@ -47,11 +46,16 @@ def _download_compressed(base_url):
         url = base_url + suffix
 
         try:
-            req = request.urlopen(url)
-        except urllib.error.URLError:
+            req = session.get(url)
+            req.raise_for_status()
+        except requests.exceptions.HTTPError:
             continue
 
-        return method(req.read()).decode('utf-8')
+        decoded = method(req.content).decode('utf-8')
+        if not decoded:
+            continue
+
+        return decoded
 
 
 def _get_value(content, key):
@@ -389,15 +393,17 @@ class APTRepository:
 
     # Examples
     ```python
-    APTRepository('http://archive.ubuntu.com/ubuntu', 'bionic', 'main')
+    APTRepository('http://archive.ubuntu.com/ubuntu', 'bionic', ['main'], ('user', 'password'))
     APTRepository('https://pkg.jenkins.io/debian/', 'binary')
     ```
     """
 
-    def __init__(self, url, dist, components=[]):
+    def __init__(self, url, dist, components=[], auth=None):
         self.url = url
         self.dist = dist
         self.components = components
+        self.session = requests.Session()
+        self.session.auth = auth
 
     def __getitem__(self, item):
         return self.get_packages_by_name(item)
@@ -439,7 +445,7 @@ class APTRepository:
             'Release'
         )
 
-        release_content = _download(url)
+        release_content = _download(self.session, url)
 
         return ReleaseFile(release_content)
 
@@ -483,7 +489,7 @@ class APTRepository:
                 'Packages'
             )
 
-        packages_file = _download_compressed(url)
+        packages_file = _download_compressed(self.session, url)
 
         if packages_file is not None:
             return PackagesFile(packages_file).packages

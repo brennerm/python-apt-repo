@@ -20,3 +20,10 @@ print([(package.package, package.version) for package in sources.get_packages_by
 ```
 
 ## [API Documentation](https://brennerm.github.io/python-apt-repo/apt_repo/)
+
+## Testing
+
+Run tests with
+```
+python3 -m pytest
+```
