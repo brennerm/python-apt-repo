@@ -310,7 +310,7 @@ class BinaryPackage:
     @property
     def size(self):
         try:
-            return _get_value(self.__content, 'Size')
+            return _get_value(self.__content, '\sSize')
         except KeyError:
             return None
 
